@@ -40,7 +40,7 @@ module.exports = {
         host:'0.0.0.0',
         proxy: [
           {
-            context: ['/users/**', '/filmManage/**', '/cinemaManage/**', '/matchManage/**', '/hotPlay/**', '/seat/**', '/hall/**'],
+            context: ['/maoyan/**','/users/**', '/filmManage/**', '/cinemaManage/**', '/matchManage/**', '/hotPlay/**', '/seat/**', '/hall/**'],
             target: 'http://127.0.0.1:3000',
             secure: false
           },
