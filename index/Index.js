@@ -3,12 +3,15 @@ import { Layout,Menu,Row, Col} from 'antd';
 import {Link} from "react-router";
 const { Header, Footer, Content} = Layout;
 
+import {ajax} from "../common/tools";
+
 
 export default class Index extends React.Component{
 	constructor(props){
 		super(props);
 			 this.state = {
 	    current: 'login',
+      data:{}
 	  }
 	}
 	 handleClick(e){
@@ -16,6 +19,25 @@ export default class Index extends React.Component{
     this.setState({
       current: e.key,
     });
+  }
+  clickPic(){
+    ajax({
+      type:"get",
+      url:"/maoyan/find",
+      data:{
+        Cname:"w"
+      },
+      success:function(data){
+        console.log("pic",data)
+          this.setState({
+            data:data.atlas
+
+          })
+    
+      }.bind(this)
+    })
+
+    console.log(this.state.data)
   }
 	render(){
 
@@ -41,7 +63,7 @@ export default class Index extends React.Component{
 
    </Header>
       	<Content style={{height:560,padding:20}}>{this.props.children}</Content>
-      	<Footer style={{fontSize:20,backgroundColor:"#00a0e9",height:110}} >欢迎登录猫眼后台管理系统</Footer>
+      	<Footer style={{fontSize:20,backgroundColor:"#00a0e9",height:110}} onClick={this.clickPic.bind(this)}>欢迎登录猫眼后台管理系统</Footer>
     	</Layout>
     	</div>
 	}
