@@ -53,7 +53,7 @@ export default class FilmManage extends React.Component{
 			 var param={
 			 		
                     page:page,
-                    rows:3
+                    rows:5
             }
             if(type){
             	param[type]=value

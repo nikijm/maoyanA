@@ -19,31 +19,6 @@ class AddFilm extends React.Component{
 		})
 	}
 	handleOk(){
-	// 	console.log("e",e)
-	// this.props.form.validateFieldsAndScroll(function(errors,values){
-	// 	if(!errors){
-
-	// 		ajax({
-	// 			type:"get",
-	// 			url:"/maoyan/add",
-	// 			data:values,
-	// 			success:function(){
-	// 				this.props.show();
-	// 				 Modal.success({
-	// 	              title: '',
-	// 	              content: '添加成功',
-	// 	              });
-
-	// 			}.bind(this)
-	// 		})
-
-	// 	}else{
-	// 		Modal.error({
-	//       title: '',
-	//       content: '输入框不得为空',
-	//       });
-	// 	}
-	// }.bind(this))
 	var data = this.props.form.getFieldsValue();
 	data.atlas=JSON.stringify(this.state.indexImgPath);
 	ajax({

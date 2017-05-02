@@ -8,7 +8,9 @@ class UpdateFilm extends React.Component{
 	constructor(props){
 		super(props);
 		this.state={
-			visible:false
+			visible:false,
+			indexImgList:[],
+			indexImgPath:[]
 		}
 	}
 	showModal(){
@@ -16,8 +18,10 @@ class UpdateFilm extends React.Component{
 	}
 	handleOk(e){
 	var values=this.props.form.getFieldsValue()
+	console.log("修改",values)
 	values._id=this.props.updatas._id
-	values.atlas=JSON.stringify(this.state.indexImgPath);
+	values.atlas=JSON.stringify(this.state.indexImgPath)
+	console.log("修改",values)
 	ajax({
 		type:"get",
 		url:"/maoyan/update",

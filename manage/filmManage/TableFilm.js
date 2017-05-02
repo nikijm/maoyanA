@@ -111,8 +111,9 @@ export default class TableFilm extends React.Component{
 			dataIndex:'atlas',
 			key:'atlas',
 			render:(value)=>{
-				// console.log("图集",value)
-				return <img width="100" height="100" src={value}/>
+			var ele="http://localhost:3000/"+value
+			console.log(ele)
+				return <img width="100" height="100" src={ele}/>
 			}
 		}
 		,{
@@ -138,7 +139,7 @@ export default class TableFilm extends React.Component{
 
 			return <div style={{clear:'both'}}>
 
-			<Table rowKey="_id" dataSource={this.props.data.rows} columns={columns} pagination={pagination} scroll={{x:2500,y:270}}/>
+			<Table rowKey="_id" dataSource={this.props.data.rows} columns={columns} pagination={pagination} scroll={{x:2400,y:270}}/>
 		
 			</div>
 

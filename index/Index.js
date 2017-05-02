@@ -25,7 +25,7 @@ export default class Index extends React.Component{
       type:"get",
       url:"/maoyan/find",
       data:{
-        Cname:"w"
+        Cname:"教父1"
       },
       success:function(data){
         console.log("pic",data)
@@ -37,7 +37,7 @@ export default class Index extends React.Component{
       }.bind(this)
     })
 
-    console.log(this.state.data)
+    console.log("获取",this.state.data)
   }
 	render(){
 
@@ -63,7 +63,7 @@ export default class Index extends React.Component{
 
    </Header>
       	<Content style={{height:560,padding:20}}>{this.props.children}</Content>
-      	<Footer style={{fontSize:20,backgroundColor:"#00a0e9",height:110}} onClick={this.clickPic.bind(this)}>欢迎登录猫眼后台管理系统</Footer>
+      	<Footer style={{fontSize:20,backgroundColor:"#00a0e9",height:110}} onClick={this.clickPic.bind(this)}>欢迎登录猫眼后台管理系统<img src={this.state.data}/></Footer>
     	</Layout>
     	</div>
 	}
