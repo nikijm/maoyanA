@@ -63,7 +63,7 @@ export default class Index extends React.Component{
 
    </Header>
       	<Content style={{height:560,padding:20}}>{this.props.children}</Content>
-      	<Footer style={{fontSize:20,backgroundColor:"#00a0e9",height:110}} onClick={this.clickPic.bind(this)}>欢迎登录猫眼后台管理系统<img src={this.state.data}/></Footer>
+      	<Footer style={{fontSize:20,backgroundColor:"#00a0e9",height:110}}>欢迎登录猫眼后台管理系统/></Footer>
     	</Layout>
     	</div>
 	}

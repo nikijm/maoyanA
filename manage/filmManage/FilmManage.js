@@ -6,47 +6,21 @@ import AddFilm from "./AddFilm";
 import SearchFilm from "./SearchFilm";
 import UpdateFilm from "./UpdateFilm";
 
+import {connect} from "react-redux";
+import store from "../../common/store";
 
-export default class FilmManage extends React.Component{
+class FilmManage extends React.Component{
 	constructor(props){
 		super(props);
-		this.state={
-			data:{},
+		this.state={		
 			type:"",
-			value:"",
-			updatas:{},
-			visible:false
-
+			value:""
 		}
-	}
-	showModal(){
-		this.setState({
-			visible: true
-		});
-	}
-	handleOk(e){
-		console.log(1);
-		this.setState({
-			visible: false
-		});
-	}
-	handleCancel(e){
-		console.log(e);
-		this.setState({
-			visible: false
-		});
 	}
 	componentWillMount(){
 		this.show();
 	}
-	setUpdata(data){
-		console.log("updatas",data)
-		this.setState({
-			updatas:data,
-			visible:true
 
-		})
-	}
 	show(page,type,value){
 		console.log("type",type)
 		console.log("value",value)
@@ -69,10 +43,12 @@ export default class FilmManage extends React.Component{
 			data:param,
 			success:function(data){
 				console.log(data)
-				this.setState({
+				
+				 store.dispatch({
+                    type:"SHOW_ALL_FILM_MF",
 					data:data
-					
-				})
+                });
+
 			}.bind(this)
 		})
 	}
@@ -82,10 +58,18 @@ export default class FilmManage extends React.Component{
 			<h1>电影管理</h1>
 			<AddFilm show={this.show.bind(this)}></AddFilm>
 			<SearchFilm show={this.show.bind(this)}></SearchFilm>
-			<TableFilm type={this.state.type} value={this.state.value} setUpdata={this.setUpdata.bind(this)} data={this.state.data} show={this.show.bind(this)}></TableFilm>		
-			<UpdateFilm visible={this.state.visible} handleOk={this.handleOk.bind(this)} handleCancel={this.handleCancel.bind(this)} showModal={this.showModal.bind(this)} updatas={this.state.updatas} show={this.show.bind(this)} ></UpdateFilm>
+			<TableFilm type={this.state.type} value={this.state.value} show={this.show.bind(this)}></TableFilm>		
+			<UpdateFilm show={this.show.bind(this)} ></UpdateFilm>
 
 			</div>
 		);
 	}
 }
+
+const mapStateToProps = function(store){
+	return {
+		filmState:store.filmReducer,
+		ModelState:store.ModelReducer
+	}
+}
+export default connect(mapStateToProps)(FilmManage)

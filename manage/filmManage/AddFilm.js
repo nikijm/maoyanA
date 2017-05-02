@@ -1,6 +1,9 @@
 import React from "react"
 import {ajax} from "../../common/tools.js"
 
+import {connect} from "react-redux";
+import store from "../../common/store";
+
 import { Form, Input, Tooltip, Icon, Cascader,Upload, Button , Modal} from 'antd';
 const FormItem = Form.Item;
 
@@ -8,14 +11,15 @@ class AddFilm extends React.Component{
 	constructor(props){
 		super(props)
 		this.state={
-			visible:false,
+		
 			indexImgList:[],
 			indexImgPath:[]
 		}
 	}
 	AddshowModal(){
-		this.setState({
-			visible:true
+		store.dispatch({
+			type:"SHOW_ADD_MODAL_FM",
+			addVisible:true
 		})
 	}
 	handleOk(){
@@ -31,19 +35,21 @@ class AddFilm extends React.Component{
               title: '',
               content: '添加成功',
               });
-
-			}.bind(this)
+			 store.dispatch({
+					type:"SHOW_ADD_MODAL_FM",
+					addVisible:false
+				})
+			}.bind(this)			
 	})
 
-		this.setState({
-			visible:false
-		})
-		console.log("fieldsValue:",data);
+
+
 	}
 	handleCancel(){
-		this.setState({
-			visible:false
-		})
+	store.dispatch({
+		type:"SHOW_ADD_MODAL_FM",
+		addVisible:false
+	})
 	}
 
 	render(){
@@ -79,7 +85,7 @@ class AddFilm extends React.Component{
 	
 		return <div style={{float:'left',marginRight:20}}>
 		<Button type="primary" onClick={this.AddshowModal.bind(this)}>增加</Button>
-			<Modal title="增加" visible={this.state.visible}
+			<Modal title="增加" visible={this.props.ModelState.addVisible}
 			onOk={this.handleOk.bind(this)} onCancel={this.handleCancel.bind(this)}
 			>
 				<Form >
@@ -143,4 +149,13 @@ class AddFilm extends React.Component{
 	}	
 
 }
-export default Form.create()(AddFilm);
+
+const mapStateToProps = function(store){
+	return {
+		filmState:store.filmReducer,
+		ModelState:store.ModelReducer
+	}
+}
+
+
+export default connect(mapStateToProps)(Form.create()(AddFilm));

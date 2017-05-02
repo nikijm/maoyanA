@@ -1,27 +1,26 @@
 import React from "react";
 import {ajax} from "../../common/tools";
+import {connect} from "react-redux";
+import store from "../../common/store";
 
 import { Form, Input, Tooltip, Icon, Cascader, Radio,Upload,Select, Row, Col, Checkbox, Button ,Card , Modal} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
+
 class UpdateFilm extends React.Component{
 	constructor(props){
 		super(props);
 		this.state={
-			visible:false,
+			// visible:false,
 			indexImgList:[],
 			indexImgPath:[]
 		}
 	}
-	showModal(){
-		this.props.showModal()
-	}
+
 	handleOk(e){
 	var values=this.props.form.getFieldsValue()
-	console.log("修改",values)
-	values._id=this.props.updatas._id
+	values._id=this.props.filmState.film._id
 	values.atlas=JSON.stringify(this.state.indexImgPath)
-	console.log("修改",values)
 	ajax({
 		type:"get",
 		url:"/maoyan/update",
@@ -33,17 +32,22 @@ class UpdateFilm extends React.Component{
 			    okText: '确定',
 			    cancelText: '取消'
 			  });
+			   store.dispatch({
+                    type:"SHOW_UPDATE_MODAL_FM",
+                    updateVisible:false
+                });
 			this.props.show()
 
 		}.bind(this)
 	})
 
-
-	this.props.handleOk()
 	}
 
 	handleCancel(e){
-		this.props.handleCancel()
+		 store.dispatch({
+            type:"SHOW_UPDATE_MODAL_FM",
+            updateVisible:false
+        });
 	}
 	render(){
 
@@ -80,7 +84,7 @@ class UpdateFilm extends React.Component{
 
 	return <div>
 			
-			<Modal title="修改" visible={this.props.visible} showModal={this.showModal.bind(this)}
+			<Modal title="修改" visible={this.props.ModelState.updateVisible}
 			onOk={this.handleOk.bind(this)} onCancel={this.handleCancel.bind(this)}
 			>
 				<Form >
@@ -144,20 +148,28 @@ class UpdateFilm extends React.Component{
 	}
 }
 
-export default Form.create({
-mapPropsToFields(props){
+
+const mapStateToProps = function(store){
 	return {
-		Cname:{value:props.updatas.Cname},
-		Ename:{value:props.updatas.Ename},
-		director:{value:props.updatas.director},
-		star:{value:props.updatas.star},
-		time:{value:props.updatas.time},
-		area:{value:props.updatas.area},
-		length:{value:props.updatas.length},
-		Admission:{value:props.updatas.Admission},
-		language:{value:props.updatas.language},
-		details:{value:props.updatas.details},
-		atlas:{value:props.updatas.atlas}
+		filmState:store.filmReducer,
+		ModelState:store.ModelReducer
 	}
 }
-})(UpdateFilm);
+
+export default connect(mapStateToProps)(Form.create({
+mapPropsToFields(props){
+	return {
+		Cname:{value:props.filmState.film.Cname},
+		Ename:{value:props.filmState.film.Ename},
+		director:{value:props.filmState.film.director},
+		star:{value:props.filmState.film.star},
+		time:{value:props.filmState.film.time},
+		area:{value:props.filmState.film.area},
+		length:{value:props.filmState.film.length},
+		Admission:{value:props.filmState.film.Admission},
+		language:{value:props.filmState.film.language},
+		details:{value:props.filmState.film.details},
+		atlas:{value:props.filmState.film.atlas}
+	}
+}
+})(UpdateFilm));

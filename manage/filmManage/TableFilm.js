@@ -1,15 +1,15 @@
 import React from "react";
 import {ajax} from "../../common/tools";
 
-import {Table, Icon,Card,Button,Modal,Pagination } from 'antd';
+import {Table, Icon,Card,Button,Modal,Pagination,notification } from 'antd';
+const confirm = Modal.confirm;
 
+import {connect} from "react-redux";
+import store from "../../common/store";
 
-export default class TableFilm extends React.Component{
+class TableFilm extends React.Component{
 	constructor(props){
 		super(props);
-		this.state = {
-			data:{}
-		}
 	}
 	showById(id){
 		console.log(id)
@@ -20,29 +20,46 @@ export default class TableFilm extends React.Component{
 				_id:id
 			},
 			success:function(data){
-				this.props.setUpdata(data)
+				
+				store.dispatch({
+					type:"SHOW_FILM_MF",
+					film:data
+				})
+				store.dispatch({
+					type:"SHOW_UPDATE_MODAL_FM",
+					updateVisible:true
+				})
 			}.bind(this)
 		})
 	}
-	del(id){
-		console.log(id)
-		ajax({
-			type:"get",
-			url:"/maoyan/del",
-			data:{
-				_id:id
-			},
-			success:function(data){
-				console.log(data)
-				Modal.confirm({
-			    title: '提示',
-			    content: '数据删除成功',
-			    okText: '确定',
-			    cancelText: '取消'
-			  });
-				this.props.show()
-			}.bind(this)
-		})
+	del(id,ele){
+		var data=ele.Cname
+		 confirm({
+		 		title: '确定删除该信息?',
+			    content: `确定删除《${data}》这部电影`,
+			    onOk() {
+			      ajax({
+						type:"get",
+						url:"/maoyan/del",
+						data:{
+							_id:id
+						},
+						success:function(data){
+							console.log(data)
+							notification[success]({
+						    message: '删除提示',
+						    description: '数据删除成功',
+						  });
+							this.props.show()
+						}.bind(this)
+					})
+			    },
+			    onCancel() {
+			      console.log('Cancel');
+			    },
+
+		 	})
+		
 	}
 	render(){
 		const columns = [{
@@ -50,7 +67,7 @@ export default class TableFilm extends React.Component{
 			dataIndex: 'Cname',
 			key: 'Cname',
 			fixed:"left",
-			width:100
+			width:150
 		}, {
 			title: '英文名',
 			dataIndex: 'Ename',
@@ -84,7 +101,7 @@ export default class TableFilm extends React.Component{
 			title: '电影时长',
 			dataIndex: 'length',
 			key: 'length',
-			width:100
+			width:80
 		}
 		, {
 			title: '票价',
@@ -124,14 +141,15 @@ export default class TableFilm extends React.Component{
 			render:(text, record)=>(
 				<span>
 				<Button type="primary" onClick={()=>{this.showById(text._id)}}>修改</Button>
-				<Button type="danger" onClick={()=>{this.del(text._id)}}>删除</Button>
+				<Button type="danger" onClick={()=>{this.del(text._id,text)}}>删除</Button>
 				</span>
 				)
 			}];
+			const data=this.props.filmState.data
 			const pagination={
-				current:this.props.data.curpage,
-				pageSize:this.props.data.eachpage,
-				total:this.props.data.total,
+				current:parseInt(this.props.filmState.data.curpage),
+				pageSize:data.eachpage,
+				total:data.total,
 				onChange:function(page, pageSize){
 					this.props.show(page,this.props.type,this.props.value)
 				}.bind(this)
@@ -139,13 +157,20 @@ export default class TableFilm extends React.Component{
 
 			return <div style={{clear:'both'}}>
 
-			<Table rowKey="_id" dataSource={this.props.data.rows} columns={columns} pagination={pagination} scroll={{x:2400,y:270}}/>
+			<Table rowKey="_id" dataSource={this.props.filmState.data.rows} columns={columns} pagination={pagination} scroll={{x:2400,y:270}}/>
 		
 			</div>
 
 		}
 	}
 
+const mapStateToProps = function(store){
+	return {
+		filmState:store.filmReducer,
+		ModelState:store.ModelReducer
+	}
+}
+export default connect(mapStateToProps)(TableFilm)
 
 
 
