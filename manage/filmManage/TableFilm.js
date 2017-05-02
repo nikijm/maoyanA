@@ -11,6 +11,19 @@ export default class TableFilm extends React.Component{
 			data:{}
 		}
 	}
+	showById(id){
+		console.log(id)
+		ajax({
+			type:"get",
+			url:"/maoyan/find",
+			data:{
+				_id:id
+			},
+			success:function(data){
+				this.props.setUpdata(data)
+			}.bind(this)
+		})
+	}
 	del(id){
 		console.log(id)
 		ajax({
@@ -94,19 +107,22 @@ export default class TableFilm extends React.Component{
 			width:1000
 		}
 		, {
-			title: '图集',
-			dataIndex: 'atlas',
-			key: 'atlas',
-			width:250
+			title:'图集',
+			dataIndex:'atlas',
+			key:'atlas',
+			render:(value)=>{
+				// console.log("图集",value)
+				return <img width="100" height="100" src={value}/>
+			}
 		}
 		,{
-			title: '操作',
+			title:'操作',
 			key: 'anction',
 			fixed:"right",
 			width:150,
 			render:(text, record)=>(
 				<span>
-				<Button type="primary" >修改</Button>
+				<Button type="primary" onClick={()=>{this.showById(text._id)}}>修改</Button>
 				<Button type="danger" onClick={()=>{this.del(text._id)}}>删除</Button>
 				</span>
 				)
@@ -116,13 +132,13 @@ export default class TableFilm extends React.Component{
 				pageSize:this.props.data.eachpage,
 				total:this.props.data.total,
 				onChange:function(page, pageSize){
-					this.props.show(page)
+					this.props.show(page,this.props.type,this.props.value)
 				}.bind(this)
 			}
 
 			return <div style={{clear:'both'}}>
 
-			<Table dataSource={this.props.data.rows} columns={columns} pagination={pagination} scroll={{x:2500,y:300}}/>
+			<Table rowKey="_id" dataSource={this.props.data.rows} columns={columns} pagination={pagination} scroll={{x:2500,y:270}}/>
 		
 			</div>
 

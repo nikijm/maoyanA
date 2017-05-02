@@ -45,7 +45,7 @@ module.exports = {
             secure: false
           },
             {
-            context: ['/getSession', '/Logout'],
+            context: ['/getSession', '/Logout',"/upload"],
             target: 'http://127.0.0.1:3000',
             secure: false
           }

@@ -1,15 +1,16 @@
 import React from "react"
 import {ajax} from "../../common/tools.js"
 
-import { Form, Input, Tooltip, Icon, Cascader, Radio,Upload,Select, Row, Col, Checkbox, Button ,Card , Modal} from 'antd';
+import { Form, Input, Tooltip, Icon, Cascader,Upload, Button , Modal} from 'antd';
 const FormItem = Form.Item;
-const Option = Select.Option;
 
 class AddFilm extends React.Component{
 	constructor(props){
 		super(props)
 		this.state={
-			visible:false
+			visible:false,
+			indexImgList:[],
+			indexImgPath:[]
 		}
 	}
 	AddshowModal(){
@@ -17,50 +18,78 @@ class AddFilm extends React.Component{
 			visible:true
 		})
 	}
-	handleOk(e){
-	this.props.form.validateFieldsAndScroll(function(errors,values){
-		if(!errors){
+	handleOk(){
+	// 	console.log("e",e)
+	// this.props.form.validateFieldsAndScroll(function(errors,values){
+	// 	if(!errors){
 
-			ajax({
-				type:"get",
-				url:"/maoyan/add",
-				data:values,
-				success:function(){
-					this.props.show();
-					 Modal.success({
-		              title: '',
-		              content: '添加成功',
-		              });
+	// 		ajax({
+	// 			type:"get",
+	// 			url:"/maoyan/add",
+	// 			data:values,
+	// 			success:function(){
+	// 				this.props.show();
+	// 				 Modal.success({
+	// 	              title: '',
+	// 	              content: '添加成功',
+	// 	              });
 
-				}.bind(this)
-			})
+	// 			}.bind(this)
+	// 		})
 
-		}else{
-			Modal.error({
-	      title: '',
-	      content: '输入框不得为空',
-	      });
-		}
-	}.bind(this))
+	// 	}else{
+	// 		Modal.error({
+	//       title: '',
+	//       content: '输入框不得为空',
+	//       });
+	// 	}
+	// }.bind(this))
+	var data = this.props.form.getFieldsValue();
+	data.atlas=JSON.stringify(this.state.indexImgPath);
+	ajax({
+		type:"post",
+		url:"/maoyan/add",
+		data:data,
+		success:function(){
+			this.props.show();
+			 Modal.success({
+              title: '',
+              content: '添加成功',
+              });
+
+			}.bind(this)
+	})
+
 		this.setState({
 			visible:false
 		})
+		console.log("fieldsValue:",data);
 	}
 	handleCancel(){
 		this.setState({
 			visible:false
 		})
 	}
-	normFile(e){
-	    console.log('Upload event:', e);
-	    if (Array.isArray(e)) {
-	      return e;
-	    }
-	    return e && e.fileList;
-	  }
 
 	render(){
-		const RadioButton = Radio.Button;
+		const props ={
+			action:"/upload",
+			listType:'picture',
+			multiple:true,
+			fileList:this.state.indexImgList,
+			onChange:function(data){
+				console.log(data)
+				let fileList=data.fileList;
+				let indexPath=fileList.map(function(file){
+						return file.response
+				})
+				this.setState({
+					indexImgList:fileList,
+					indexImgPath:indexPath
+				})
+			}.bind(this)
+
+		}
 		const { getFieldDecorator } = this.props.form;
 				const formItemLayout = {
 					labelCol: {
@@ -72,19 +101,7 @@ class AddFilm extends React.Component{
 						sm: { span: 14 },
 					},
 				};
-				const tailFormItemLayout = {
-					wrapperCol: {
-						xs: {
-							span: 24,
-							offset: 0,
-						},
-						sm: {
-							span: 14,
-							offset: 6,
-						},
-					},
-				};
-
+	
 		return <div style={{float:'left',marginRight:20}}>
 		<Button type="primary" onClick={this.AddshowModal.bind(this)}>增加</Button>
 			<Modal title="增加" visible={this.state.visible}
@@ -134,16 +151,16 @@ class AddFilm extends React.Component{
 						{getFieldDecorator('details', {rules: [{ required: true}]})(<Input />)}
 					</FormItem>
 
+			        <FormItem {...formItemLayout}
+			        label = "图集">
 
-					<FormItem {...formItemLayout} label="Upload" extra="添加图集">
-			          {getFieldDecorator('atlas', {valuePropName: 'fileList',getValueFromEvent: this.normFile,
-			          })(<Upload name="logo" action="/maoyan/add" listType="picture">
-			              <Button>
-			                <Icon type="upload" /> Click to upload
-			              </Button>
-			            </Upload>
-			          )}
-			        </FormItem>
+		                <Upload {...props}>
+		                  <Button>
+		                    <Icon type="upload" /> upload
+		                  </Button>
+		                </Upload>
+            		</FormItem>
+
 				</Form>
 			</Modal>
 
